@@ -15,10 +15,11 @@
     --frost: #eaf2fb;
     --frost-dim: #b9cbe0;
     --snow: #ffffff;
-    --amber: #e9b66b;          /* lodge light accent */
-    --ice: oklch(0.78 0.07 230); /* cool glacial blue */
+    --amber: #e9b66b;
+    --ice: oklch(0.78 0.07 230);
     --line: rgba(234, 242, 251, 0.14);
     --card: rgba(255, 255, 255, 0.06);
+    --alert-red: #ff2d2d;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +41,6 @@
     box-shadow: 0 0 80px rgba(0,0,0,0.5);
   }
 
-  /* ---------- Snowfall ---------- */
   .snow-layer {
     position: fixed;
     inset: 0;
@@ -67,11 +67,11 @@
     100% { transform: translateY(108vh) translateX(24px); opacity: 0; }
   }
 
-  /* ---------- Hero ---------- */
   .hero {
     position: relative;
     height: 360px;
-    background-image: url("uploads/winter-night-esqui-em-bariloche-1.jpg");
+    background-image: url("https://rogeriolmatos.github.io/bariloche2027/uploads/winter-night-esqui-em-bariloche-1.jpg");
+    background-color: var(--night-soft);
     background-size: cover;
     background-position: center 35%;
   }
@@ -79,12 +79,31 @@
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 1;
     background: linear-gradient(180deg, rgba(13,27,46,0.30) 0%, rgba(13,27,46,0.55) 55%, var(--night) 100%);
   }
-  .hero-content {
+
+  .city-lights {
     position: absolute;
     inset: 0;
     z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .city-light {
+    position: absolute;
+    border-radius: 50%;
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.75); }
+    50%      { opacity: 1;   transform: scale(1.3); }
+  }
+
+  .hero-content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -119,7 +138,6 @@
     margin-top: 2px;
   }
 
-  /* ---------- Intro / overall goal ---------- */
   .intro {
     padding: 30px 28px 8px;
     text-align: center;
@@ -171,10 +189,11 @@
     height: 100%;
     border-radius: 99px;
     background: linear-gradient(90deg, var(--ice), var(--amber));
+    background-size: 200% 100%;
+    animation: shimmer 2.4s linear infinite;
     transition: width 1.4s cubic-bezier(.16,1,.3,1);
   }
 
-  /* ---------- Section heading ---------- */
   .members-head {
     display: flex;
     align-items: center;
@@ -198,7 +217,6 @@
     white-space: nowrap;
   }
 
-  /* ---------- Member rows ---------- */
   .list {
     padding: 14px 28px 36px;
     display: flex;
@@ -215,12 +233,14 @@
   }
   .member:hover { border-color: rgba(233,182,107,0.4); transform: translateY(-2px); }
   .member.funded { border-color: rgba(233,182,107,0.35); }
+  .member.alert { border-color: rgba(255,45,45,0.55); }
+  .member.alert:hover { border-color: rgba(255,45,45,0.85); }
 
   .member-top {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 14px;
+    margin-bottom: 6px;
   }
   .avatar {
     width: 44px;
@@ -258,8 +278,40 @@
     color: var(--frost-dim);
   }
 
+  @keyframes pulseRed {
+    0%, 100% {
+      color: var(--alert-red);
+      text-shadow: 0 0 6px rgba(255,45,45,0.6);
+      transform: scale(1);
+    }
+    50% {
+      color: #ff6b6b;
+      text-shadow: 0 0 18px rgba(255,45,45,0.95);
+      transform: scale(1.1);
+    }
+  }
+  .raised.alert-red {
+    color: var(--alert-red) !important;
+    font-weight: 800 !important;
+    animation: pulseRed 1.2s ease-in-out infinite;
+    display: inline-block;
+  }
+  .pct.alert-red {
+    color: var(--alert-red) !important;
+    font-weight: 800;
+    animation: pulseRed 1.2s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  .track-zone {
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: flex-end;
+  }
   .track {
-    height: 9px;
+    height: 10px;
+    width: 100%;
     border-radius: 99px;
     background: rgba(255,255,255,0.07);
     overflow: hidden;
@@ -269,10 +321,53 @@
     height: 100%;
     border-radius: 99px;
     background: linear-gradient(90deg, var(--ice), #9ecbff);
+    background-size: 200% 100%;
+    animation: shimmer 2.2s linear infinite;
     width: 0;
-    transition: width 1.6s cubic-bezier(.16,1,.3,1);
-    box-shadow: 0 0 12px rgba(158,203,255,0.5);
+    transition: width 1.8s cubic-bezier(.16,1,.3,1);
+    box-shadow: 0 0 12px rgba(158,203,255,0.55);
+    position: relative;
   }
+  .fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 99px;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 8px, transparent 8px 16px);
+    animation: stripes 1.4s linear infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @keyframes stripes {
+    0%   { background-position: 0 0; }
+    100% { background-position: 32px 0; }
+  }
+
+  .rider {
+    position: absolute;
+    bottom: 7px;
+    left: 0;
+    font-size: 26px;
+    line-height: 1;
+    transform: translateX(-50%);
+    transition: left 1.8s cubic-bezier(.16,1,.3,1);
+    animation: ride 1.1s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    z-index: 2;
+    pointer-events: none;
+  }
+  @keyframes ride {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(-4deg); }
+    50%      { transform: translateX(-50%) translateY(-5px) rotate(4deg); }
+  }
+  .rider.shiver { animation: shiver 0.4s ease-in-out infinite; }
+  @keyframes shiver {
+    0%, 100% { transform: translateX(-50%) rotate(-6deg); }
+    50%      { transform: translateX(-50%) rotate(6deg); }
+  }
+
   .member-foot {
     display: flex;
     justify-content: space-between;
@@ -283,7 +378,6 @@
   .pct.zero { color: var(--frost-dim); }
   .remaining { font-size: 12px; color: var(--frost-dim); }
 
-  /* ---------- Footer ---------- */
   .footer {
     text-align: center;
     padding: 8px 28px 40px;
@@ -315,6 +409,7 @@
 
   <main class="page">
     <header class="hero">
+      <div class="city-lights" id="cityLights"></div>
       <div class="hero-content">
         <div class="eyebrow">Patagônia Argentina</div>
         <h1 class="hero-title">Projeto Bariloche<span class="year">2027</span></h1>
@@ -327,9 +422,9 @@
 
     <section class="overall">
       <div class="overall-label">Arrecadação total do grupo</div>
-      <div class="overall-amount"><span>R$ 400,05</span> / R$ 30.000</div>
+      <div class="overall-amount"><span>R$ 3.530</span> / R$ 30.000</div>
       <div class="overall-sub">6 viajantes · meta de R$ 5.000 cada</div>
-      <div class="overall-track"><div class="overall-fill" data-fill="0.33"></div></div>
+      <div class="overall-track"><div class="overall-fill" data-fill="11.8"></div></div>
     </section>
 
     <div class="members-head">
@@ -345,14 +440,17 @@
           <div class="avatar">C</div>
           <div class="member-name">Cristiane</div>
           <div class="member-amount">
-            <div class="raised">R$ 0,05</div>
+            <div class="raised">R$ 830</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="0.5"></div></div>
+        <div class="track-zone">
+          <div class="rider" data-pct="16.6">⛄</div>
+          <div class="track"><div class="fill" data-pct="16.6"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct">0,001%</div>
-          <div class="remaining">Faltam R$ 4.999,95</div>
+          <div class="pct">16,6%</div>
+          <div class="remaining">Faltam R$ 4.170</div>
         </div>
       </article>
 
@@ -362,65 +460,77 @@
           <div class="avatar">D</div>
           <div class="member-name">Daren</div>
           <div class="member-amount">
-            <div class="raised zero">R$ 0</div>
+            <div class="raised">R$ 500</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="0"></div></div>
+        <div class="track-zone">
+          <div class="rider" data-pct="10">🛷</div>
+          <div class="track"><div class="fill" data-pct="10"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct zero">0%</div>
-          <div class="remaining">Faltam R$ 5.000</div>
+          <div class="pct">10%</div>
+          <div class="remaining">Faltam R$ 4.500</div>
         </div>
       </article>
 
       <!-- JOÃO -->
-      <article class="member">
+      <article class="member alert">
         <div class="member-top">
           <div class="avatar">J</div>
           <div class="member-name">João</div>
           <div class="member-amount">
-            <div class="raised zero">R$ 0</div>
+            <div class="raised alert-red">R$ 0</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="0"></div></div>
+        <div class="track-zone">
+          <div class="rider shiver" data-pct="0">🏂</div>
+          <div class="track"><div class="fill" data-pct="0"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct zero">0%</div>
+          <div class="pct alert-red">0%</div>
           <div class="remaining">Faltam R$ 5.000</div>
         </div>
       </article>
 
       <!-- NARA -->
-      <article class="member funded">
+      <article class="member">
         <div class="member-top">
           <div class="avatar">N</div>
           <div class="member-name">Nara</div>
           <div class="member-amount">
-            <div class="raised">R$ 100</div>
+            <div class="raised">R$ 500</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="2"></div></div>
+        <div class="track-zone">
+          <div class="rider" data-pct="10">🚠</div>
+          <div class="track"><div class="fill" data-pct="10"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct">2%</div>
-          <div class="remaining">Faltam R$ 4.900</div>
+          <div class="pct">10%</div>
+          <div class="remaining">Faltam R$ 4.500</div>
         </div>
       </article>
 
       <!-- ROGÉRIO -->
-      <article class="member">
+      <article class="member funded">
         <div class="member-top">
           <div class="avatar">R</div>
           <div class="member-name">Rogério</div>
           <div class="member-amount">
-            <div class="raised">R$ 300</div>
+            <div class="raised">R$ 1.200</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="6"></div></div>
+        <div class="track-zone">
+          <div class="rider" data-pct="24">🚙</div>
+          <div class="track"><div class="fill" data-pct="24"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct">6%</div>
-          <div class="remaining">Faltam R$ 4.700</div>
+          <div class="pct">24%</div>
+          <div class="remaining">Faltam R$ 3.800</div>
         </div>
       </article>
 
@@ -430,14 +540,17 @@
           <div class="avatar">S</div>
           <div class="member-name">Simôni</div>
           <div class="member-amount">
-            <div class="raised zero">R$ 0</div>
+            <div class="raised">R$ 500</div>
             <div class="of">de R$ 5.000</div>
           </div>
         </div>
-        <div class="track"><div class="fill" data-pct="0"></div></div>
+        <div class="track-zone">
+          <div class="rider" data-pct="10">⛷️</div>
+          <div class="track"><div class="fill" data-pct="10"></div></div>
+        </div>
         <div class="member-foot">
-          <div class="pct zero">0%</div>
-          <div class="remaining">Faltam R$ 5.000</div>
+          <div class="pct">10%</div>
+          <div class="remaining">Faltam R$ 4.500</div>
         </div>
       </article>
     </section>
@@ -445,23 +558,25 @@
     <footer class="footer">
       <div class="snow-mark">❄</div>
       <p>Cada contribuição nos aproxima dos lagos, das montanhas e da neve da Patagônia. Vamos juntos.</p>
-      <div class="meta">Atualizado · Maio 2026</div>
+      <div class="meta">Atualizado · Julho 2026</div>
     </footer>
   </main>
 
   <script>
-    // Animate progress bars on load
     window.addEventListener("load", () => {
       setTimeout(() => {
         document.querySelectorAll(".fill").forEach(el => {
           el.style.width = el.dataset.pct + "%";
+        });
+        document.querySelectorAll(".rider").forEach(el => {
+          const p = parseFloat(el.dataset.pct) || 0;
+          el.style.left = Math.max(p, 2.5) + "%";
         });
         const ov = document.querySelector(".overall-fill");
         if (ov) ov.style.width = (parseFloat(ov.dataset.fill) || 0) + "%";
       }, 250);
     });
 
-    // Generate snowfall
     (function () {
       const layer = document.getElementById("snow");
       const count = 36;
@@ -478,6 +593,42 @@
         f.style.animationDelay = (-Math.random() * dur).toFixed(2) + "s";
         f.style.filter = "blur(" + (size > 4 ? 0.6 : 0) + "px)";
         layer.appendChild(f);
+      }
+    })();
+
+    (function () {
+      const layer = document.getElementById("cityLights");
+      const warm = ["#ffb84d", "#ff9d2e", "#ffd88a", "#ffc46b", "#ff8c42"];
+
+      for (let i = 0; i < 34; i++) {
+        const l = document.createElement("div");
+        l.className = "city-light";
+        const size = Math.random() * 4 + 2.5;
+        l.style.width = size + "px";
+        l.style.height = size + "px";
+        l.style.left = (Math.random() * 94 + 3) + "%";
+        l.style.bottom = (Math.random() * 105 + 8) + "px";
+        const c = warm[Math.floor(Math.random() * warm.length)];
+        l.style.background = c;
+        l.style.boxShadow = "0 0 " + (size * 3.2) + "px " + (size * 1.1) + "px " + c;
+        l.style.animationDuration = (Math.random() * 2.5 + 1.5).toFixed(2) + "s";
+        l.style.animationDelay = (-Math.random() * 3).toFixed(2) + "s";
+        layer.appendChild(l);
+      }
+
+      for (let i = 0; i < 10; i++) {
+        const l = document.createElement("div");
+        l.className = "city-light";
+        const size = Math.random() * 2.5 + 1.5;
+        l.style.width = size + "px";
+        l.style.height = size + "px";
+        l.style.left = (Math.random() * 90 + 5) + "%";
+        l.style.bottom = (Math.random() * 110 + 170) + "px";
+        l.style.background = "#eaf2fb";
+        l.style.boxShadow = "0 0 " + (size * 3) + "px " + size + "px rgba(234,242,251,0.8)";
+        l.style.animationDuration = (Math.random() * 3 + 2).toFixed(2) + "s";
+        l.style.animationDelay = (-Math.random() * 3).toFixed(2) + "s";
+        layer.appendChild(l);
       }
     })();
   </script>
